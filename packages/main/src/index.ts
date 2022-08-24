@@ -1,12 +1,18 @@
-import { app, BrowserWindow, ipcMain, Menu, MenuItem } from 'electron';
+import path from 'path'
+import { BrowserWindow, Menu, MenuItem, app, ipcMain } from 'electron'
 
-declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
-declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
+export const ROOT_PATH = {
+  // /dist
+  // dist: path.join(__dirname, '../..'),
+  dist: path.join(__dirname, '../renderer'),
+  // /dist or /public
+  // public: path.join(__dirname, app.isPackaged ? '../..' : '../../../public'),
+}
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
-  app.quit();
-}
+// if (require('electron-squirrel-startup')) {
+//   app.quit()
+// }
 
 let count = 0
 
@@ -30,16 +36,19 @@ const createWindow = (): void => {
     x,
     y,
     webPreferences: {
-      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+      preload: path.join(__dirname, '../preload/index.js'),
       additionalArguments: [`--window-id=${count}`],
-      nodeIntegration: testing ? true : false,
-      contextIsolation: testing ? false : true,
+      nodeIntegration: !!testing,
+      contextIsolation: !testing,
     },
     show: false,
   })
 
+  const indexHtml = path.join(ROOT_PATH.dist, 'index.html')
+
   // and load the index.html of the app.
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  // mainWindow.loadURL(indexHtml);
+  mainWindow.loadFile(indexHtml)
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
@@ -47,7 +56,7 @@ const createWindow = (): void => {
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
-};
+}
 
 function initMenu() {
   const menu = Menu.getApplicationMenu()
@@ -61,12 +70,10 @@ function initMenu() {
     },
   })
   // find the "File" MenuItem
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const filemenu = menu.items.find(item => item.role === 'filemenu')
-  if (filemenu) {
+  if (menu) {
+    const filemenu = menu.items.find(({ role }) => role === (process.platform !== 'darwin' ? 'fileMenu' : 'fileMenu'.toLowerCase()))
     // add the "New Window" MenuItem to the beginning of the File menu
-    filemenu.submenu.insert(0, newWindow)
+    filemenu?.submenu?.insert(0, newWindow)
   }
   // update the application menu
   Menu.setApplicationMenu(menu)
@@ -79,17 +86,17 @@ app.on('ready', () => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit();
+    app.quit()
   }
-});
+})
 
 app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+    createWindow()
   }
-});
+})
 
 /**
  * Respond to IPC request for a new window
@@ -110,7 +117,7 @@ function mainSynchronousData() {
 }
 
 async function mainAsynchronousData() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve('Main Asynchronous Data')
     }, 1000)
@@ -122,5 +129,5 @@ ipcMain.on('main-synchronous-data', (event, arg) => {
 })
 
 ipcMain.on('main-asynchronous-data', async (event, arg) => {
-  return await mainAsynchronousData() 
+  return await mainAsynchronousData()
 })

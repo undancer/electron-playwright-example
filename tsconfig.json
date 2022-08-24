@@ -1,20 +1,21 @@
 {
+  "extends": "./tsconfig.default.json",
   "compilerOptions": {
-    "allowJs": true,
-    "module": "commonjs",
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "outDir": "dist",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "paths": {
-      "*": ["node_modules/*"]
-    }
+    // "allowJs": true,
+    // "module": "commonjs",
+    // "skipLibCheck": true,
+    // "esModuleInterop": true,
+    // "noImplicitAny": true,
+    // "sourceMap": true,
+    // "baseUrl": ".",
+    // "outDir": "dist",
+    // "moduleResolution": "node",
+    // "resolveJsonModule": true,
+    // "paths": {
+    //   // "*": ["node_modules/*"]
+    // }
   },
-  "include": [
-    "src/**/*"
-  ]
+  // "include": [
+  //   "src/**/*"
+  // ]
 }

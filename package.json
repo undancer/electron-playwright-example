@@ -3,16 +3,10 @@
   "productName": "electron-playwright-example",
   "version": "1.0.0",
   "description": "My Electron application description",
-  "main": ".webpack/main",
-  "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx .",
-    "pree2e": "npm run package",
-    "e2e": "playwright test"
+  "author": {
+    "name": "Jeff Robbins"
   },
+  "license": "MIT",
   "keywords": [
     "electron",
     "playwright",
@@ -21,87 +15,29 @@
     "webpack",
     "typescript"
   ],
-  "author": {
-    "name": "Jeff Robbins"
-  },
-  "license": "MIT",
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "asar": true
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "electron_playwright_example"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ],
-      "plugins": [
-        [
-          "@electron-forge/plugin-webpack",
-          {
-            "mainConfig": "./webpack.main.config.js",
-            "renderer": {
-              "config": "./webpack.renderer.config.js",
-              "entryPoints": [
-                {
-                  "html": "./src/renderer/index.html",
-                  "js": "./src/renderer/index.ts",
-                  "preload": {
-                    "js": "./src/renderer/preload.ts"
-                  },
-                  "name": "main_window"
-                }
-              ]
-            }
-          }
-        ]
-      ]
-    }
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build0": "tsc --noEmit && vite build && electron-builder",
+    "build": "scripts/build.ts",
+    "pree2e": "npm run build",
+    "e2e": "playwright test",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx,.json,.vue .",
+    "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx,.json,.vue . --fix"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.64",
-    "@electron-forge/maker-deb": "^6.0.0-beta.64",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.64",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.64",
-    "@electron-forge/maker-zip": "^6.0.0-beta.64",
-    "@electron-forge/plugin-webpack": "6.0.0-beta.64",
-    "@playwright/test": "^1.23.1",
-    "@typescript-eslint/eslint-plugin": "^5.30.5",
-    "@typescript-eslint/parser": "^5.30.5",
-    "@vercel/webpack-asset-relocator-loader": "1.7.2",
-    "asar": "^3.1.0",
-    "css-loader": "^6.7.1",
-    "electron": "^19.0.7",
+    "@antfu/eslint-config": "^0.26.1",
+    "@playwright/test": "^1.25.1",
+    "electron": "^20.1.0",
+    "electron-builder": "^23.3.3",
     "electron-playwright-helpers": "^1.2.0",
-    "eslint": "^8.19.0",
-    "eslint-plugin-import": "^2.26.0",
-    "fork-ts-checker-webpack-plugin": "^7.2.11",
+    "eslint": "^8.23.0",
     "jimp": "^0.16.1",
-    "node-loader": "^2.0.0",
-    "playwright": "^1.23.1",
-    "playwright-core": "^1.23.1",
-    "style-loader": "^3.3.1",
-    "ts-loader": "^9.3.1",
-    "typescript": "^4.7.4"
-  },
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "playwright": "^1.25.1",
+    "playwright-core": "^1.25.1",
+    "tsx": "^3.8.2",
+    "typescript": "~4.7.4",
+    "vite": "^3.0.9",
+    "vite-plugin-electron": "^0.9.1",
+    "vite-plugin-electron-renderer": "^0.9.0"
   }
 }
